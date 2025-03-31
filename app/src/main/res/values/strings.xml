@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My LearnApplication</string>
+    <string name="action_setting">Settings</string>
+    <string name="click_me">click me</string>
+    <string name="sugar">sugar</string>
+    <string name="coffee_addons">What else in your coffee?</string>
+    <string name="cream">cream</string>
+    <string name="pay">Pay</string>
+</resources>
