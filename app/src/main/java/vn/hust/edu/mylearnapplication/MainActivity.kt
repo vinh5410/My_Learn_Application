@@ -29,56 +29,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import vn.hust.edu.mylearnapplication.ui.theme.MyLearnApplicationTheme
 import kotlin.math.sqrt
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var editName: EditText
-    private lateinit var editMSSV: EditText
-    private lateinit var btnAdd: Button
-    private lateinit var listView: ListView
-    private val students = ArrayList<Student>()
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StudentAdapter
+    private val studentList = mutableListOf<Student>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        editName = findViewById(R.id.edit_text_id1)
-        editMSSV = findViewById(R.id.edit_text_id2)
-        btnAdd = findViewById(R.id.btnAdd)
-        listView = findViewById(R.id.list_item1)
+        val nameEditText = findViewById<EditText>(R.id.edit_text_id1)
+        val mssvEditText = findViewById<EditText>(R.id.edit_text_id2)
+        val btnAdd = findViewById<Button>(R.id.btnAdd)
+        recyclerView = findViewById(R.id.recycler_view1)
 
-        adapter = StudentAdapter()
-        listView.adapter = adapter
+        adapter = StudentAdapter(studentList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
         btnAdd.setOnClickListener {
-            val name = editName.text.toString().trim()
-            val mssv = editMSSV.text.toString().trim()
+            val name = nameEditText.text.toString()
+            val mssv = mssvEditText.text.toString()
             if (name.isNotEmpty() && mssv.isNotEmpty()) {
-                students.add(0, Student(name, mssv)) // Add student to the beginning of the list
-                adapter.notifyDataSetChanged()
-                editName.text.clear()
-                editMSSV.text.clear()
+                studentList.add(Student(name, mssv))
+                adapter.notifyItemInserted(studentList.size - 1)
+                nameEditText.text.clear()
+                mssvEditText.text.clear()
             }
-        }
-    }
-
-    data class Student(val name: String, val mssv: String)
-
-    inner class StudentAdapter : ArrayAdapter<Student>(this, R.layout.list_item, students) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
-            val textView: TextView = view.findViewById(R.id.textView)
-            val deleteIcon: ImageView = view.findViewById(R.id.deleteIcon)
-            val student = getItem(position)
-            textView.text = "${student?.name} - ${student?.mssv}"
-
-            deleteIcon.setOnClickListener {
-                students.removeAt(position)
-                notifyDataSetChanged()
-            }
-            return view
         }
     }
 }
